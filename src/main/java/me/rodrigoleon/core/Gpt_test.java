@@ -1,4 +1,4 @@
-package me.rodrigoleon.gpt;
+package me.rodrigoleon.core;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -10,16 +10,20 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-public class Gpt {
-    private static boolean DEBUGMODE = false;
+public class Gpt_test extends Main {
+
     private static String API_KEY;
     private static final String MODEL = "gpt-3.5-turbo";
 
+    public static void main(String[] args) {
+        setApiKey("#");
+
+        roll("batman", "en donde vives?");
+
+    }
     public static void roll(String personaje, String pregunta) {
-        if (DEBUGMODE){
-            System.out.println("personaje: " + personaje);
-            System.out.println("Pregunta: "+ pregunta);
-        }
+        System.out.println("personaje: " + personaje);
+        System.out.println("Pregunta: "+ pregunta);
         System.out.println(Prompt("habla como si fueras " + personaje +" \\n "+ pregunta));
     }
 
@@ -37,16 +41,15 @@ public class Gpt {
             HttpResponse response = httpClient.execute(request);
 
             String responseBody = EntityUtils.toString(response.getEntity());
-            System.out.println( DEBUGMODE ? body : "debug mode off");
+
             return extractMessageFromJSONResponse(responseBody);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private static String extractMessageFromJSONResponse(String response) {
+    public static String extractMessageFromJSONResponse(String response) {
         int start = response.indexOf("content") + 11;
         int end = response.indexOf("\"", start);
         return response.substring(start, end);
@@ -54,8 +57,5 @@ public class Gpt {
 
     public static void setApiKey(String apiKey) {
         API_KEY = apiKey;
-    }
-    public static void DEBUGMODE(boolean debug){
-        DEBUGMODE = debug;
     }
 }
